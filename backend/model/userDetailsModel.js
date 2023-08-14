@@ -36,9 +36,10 @@ const UserSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
+      
+      // enums: [0, 1, 2, 3], //0 - not connected,  1 - requested,  2 - pending, 3 - connected
       status: Number,
 
-      enums: [0, 1, 2, 3], //0 - not connected,  1 - requested,  2 - pending, 3 - connected
     },
   ],
 });

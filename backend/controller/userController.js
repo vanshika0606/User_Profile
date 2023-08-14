@@ -1,7 +1,7 @@
 const UserDetails = require("../model/userDetailsModel");
 const mongoose = require("mongoose");
 
-exports.Register = async (req, res, next) => {
+exports.register = async (req, res, next) => {
   const { name, email, phoneNumber, password } = req.body;
   console.log(name, email, phoneNumber, password);
 
@@ -117,8 +117,8 @@ exports.logout = async (req, res, next) => {
 //   // console.log(allUser);
 // };
 
-exports.FriendListUpdate = async ( userId ) => {
-  const id = new mongoose.Types.ObjectId( userId.toString());
+exports.FriendListUpdate = async (userId) => {
+  const id = new mongoose.Types.ObjectId(userId.toString());
 
   const result = await UserDetails.updateMany(
     {
@@ -133,7 +133,7 @@ exports.FriendListUpdate = async ( userId ) => {
 
   const allUser = await UserDetails.find({ _id: { $ne: id } });
 
-  console.log("all users are: ",allUser);
+  console.log("all users are: ", allUser);
   const friend = [];
 
   for (const user of allUser) {
@@ -160,11 +160,90 @@ exports.FriendListUpdate = async ( userId ) => {
   // const allUser = await UserDetails.find
 };
 
-exports.AddFriends = async (req, res, next) => {
-  // console.log(req.user._id);
-  // this.NewUser();
-  this.allUser();
-  // console.log(user.);
+exports.requestFriend = async (req, res, next) => {
+  const friendUserId = new mongoose.Types.ObjectId(req.params.id.toString());
+
+  const userId =  new mongoose.Types.ObjectId(req.user._id.toString());
+  const newStatus = 1; 
+  const updateMyList = await UserDetails.updateOne(
+    {
+      _id: userId,
+      "friends.user": friendUserId,
+    },
+    { $set: { "friends.$.status": newStatus } }
+  )
+
+  const UpdateFriendList = await UserDetails.updateOne(
+    {
+      _id: friendUserId,
+      "friends.user": userId,
+    },
+    { $set: { "friends.$.status": 2 } }
+  );
+
+  console.log("My list Updated: ", updateMyList);
+
+  console.log("Friend list updated: ", UpdateFriendList);
+
+
+};
+
+exports.confirmFriend = async (req, res, next) => {
+  console.log(req.user);
+  const friendUserId = new mongoose.Types.ObjectId(req.params.id.toString());
+
+  const userId =  new mongoose.Types.ObjectId(req.user._id.toString());
+  const newStatus = 3; 
+  const updateMyList = await UserDetails.updateOne(
+    {
+      _id: userId,
+      "friends.user": friendUserId,
+    },
+    { $set: { "friends.$.status": newStatus } }
+  )
+
+  const UpdateFriendList = await UserDetails.updateOne(
+    {
+      _id: friendUserId,
+      "friends.user": userId,
+    },
+    { $set: { "friends.$.status": newStatus } }
+  );
+
+  console.log("My list Updated: ", updateMyList);
+
+  console.log("Friend list updated: ", UpdateFriendList);
+
+
+};
+
+exports.removeFriend = async (req, res, next) => {
+  // console.log(req.user);
+  const friendUserId = new mongoose.Types.ObjectId(req.params.id.toString());
+
+  const userId =  new mongoose.Types.ObjectId(req.user._id.toString());
+  const newStatus = 0; 
+  const updateMyList = await UserDetails.updateOne(
+    {
+      _id: userId,
+      "friends.user": friendUserId,
+    },
+    { $set: { "friends.$.status": newStatus } }
+  )
+
+  const UpdateFriendList = await UserDetails.updateOne(
+    {
+      _id: friendUserId,
+      "friends.user": userId,
+    },
+    { $set: { "friends.$.status": newStatus } }
+  );
+
+  console.log("My list Updated: ", updateMyList);
+
+  console.log("Friend list updated: ", UpdateFriendList);
+
+
 };
 
 exports.UpdateProfile = async (req, res, next) => {

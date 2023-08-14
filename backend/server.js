@@ -1,11 +1,12 @@
 const app = require("./app");
 const dotenv = require("dotenv");
 const connectDatabase = require("./database/db");
-const cloudinary = require('cloudinary');
 
 dotenv.config({ path: "./.env" });
 
 const PORT = process.env.PORT;
+
+const cloudinary = require('cloudinary').v2;
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,

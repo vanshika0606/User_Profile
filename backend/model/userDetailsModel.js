@@ -37,7 +37,8 @@ const UserSchema = mongoose.Schema({
         ref: "User",
       },
       status: Number,
-      enums: [0, 1, 2, 3],
+
+      enums: [0, 1, 2, 3], //0 - not connected,  1 - requested,  2 - pending, 3 - connected
     },
   ],
 });

@@ -1,21 +1,5 @@
 const UserDetails = require("../model/userDetailsModel");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require('cloudinary');
-const multer = require("multer");
-
-const storageImage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: "images",
-    transformation: [{ width: 500, height: 500, crop: "fill" }],
-    format: "jpg",
-    resource_type: "image",
-    allowedFormats: ["jpeg", "png", "jpg"],
-  },
-});
-
-exports.uploadImage = multer({ storage: storageImage });
-
+const mongoose = require("mongoose");
 
 exports.Register = async (req, res, next) => {
   const { name, email, phoneNumber, password } = req.body;
@@ -45,12 +29,16 @@ exports.Register = async (req, res, next) => {
 
   console.log(options);
 
+  this.FriendListUpdate(user._id);
+
   res.status(200).cookie("token", token, options).json({
     success: true,
     user,
     token,
     message: "Registered successfully!",
   });
+
+  // next();
 };
 
 exports.loginUser = async (req, res, next) => {
@@ -91,7 +79,7 @@ exports.loginUser = async (req, res, next) => {
     httpOnly: false,
   };
 
-  res.status(200).cookie("token", token, options).json({
+  return res.status(200).cookie("token", token, options).json({
     success: true,
     token,
     user,
@@ -110,10 +98,75 @@ exports.logout = async (req, res, next) => {
   });
 };
 
-exports.AddFriends = async (req, res, next) => {};
+// exports.NewUser = async (req, res, next) => {
+//   const allUser = await UserDetails.updateMany({
+//     // _id: { $ne: req.user.id },
+//     // $push: { friends: { user: req.user._id, status: 0 } },
+//   })
+//     .update({
+//       $push: { friends: { user: req.user._id, status: 0 } },
+//     })
+//     .exec((err, result) => {
+//       if (err) {
+//         console.error("Error:", err);
+//       } else {
+//         console.log("Number of Documents Updated:", result.nModified);
+//       }
+//     });
+//   console.log("mm");
+//   // console.log(allUser);
+// };
+
+exports.FriendListUpdate = async ( userId ) => {
+  const id = new mongoose.Types.ObjectId( userId.toString());
+
+  const result = await UserDetails.updateMany(
+    {
+      _id: { $ne: id },
+    },
+    {
+      $push: {
+        friends: { user: id, status: 0 },
+      },
+    }
+  );
+
+  const allUser = await UserDetails.find({ _id: { $ne: id } });
+
+  console.log("all users are: ",allUser);
+  const friend = [];
+
+  for (const user of allUser) {
+    const id = new mongoose.Types.ObjectId(user._id.toString());
+    friend.push({
+      user: id,
+      status: 0,
+    });
+  }
+
+  console.log("object of friends for my data: ", friend);
+
+  const myData = await UserDetails.findOneAndUpdate(
+    { _id: id },
+    {
+      $push: {
+        friends: friend,
+      },
+    }
+  );
+
+  console.log("my Data: ", myData);
+
+  // const allUser = await UserDetails.find
+};
+
+exports.AddFriends = async (req, res, next) => {
+  // console.log(req.user._id);
+  // this.NewUser();
+  this.allUser();
+  // console.log(user.);
+};
 
 exports.UpdateProfile = async (req, res, next) => {
-  console.log("mmm");
   console.log(req.file);
-
 };

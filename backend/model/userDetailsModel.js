@@ -13,7 +13,7 @@ const UserSchema = mongoose.Schema({
     unique: true,
   },
   phoneNumber: {
-    type: Number,
+    type: String,
     required: [true, "Please Enter Your Phone Number"],
   },
   password: {
@@ -21,25 +21,30 @@ const UserSchema = mongoose.Schema({
     required: [true, "Please Enter Your Password"],
   },
   avatar: {
-    public_id: {
-      type: String,
-      //   required: true,
-    },
     url: {
       type: String,
       //   required: true,
     },
   },
+  about: {
+    type: String,
+  },
+  Skills: [
+    {
+      skill: {
+        type: String,
+      },
+    },
+  ],
   friends: [
     {
       user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
       },
-      
+
       // enums: [0, 1, 2, 3], //0 - not connected,  1 - requested,  2 - pending, 3 - connected
       status: Number,
-
     },
   ],
 });

@@ -4,7 +4,7 @@ const { statusUpdate } = require("../utils/friendStatusUpdate");
 const { FriendListUpdate } = require("../utils/usersListUpdate");
 const sendToken = require("../utils/jwtToken");
 const { updateField } = require("../utils/updateFiels");
-const { friendList } = require('../utils/friendList')
+const { friendList } = require("../utils/friendList");
 
 exports.register = async (req, res, next) => {
   const { name, email, phoneNumber, password } = req.body;
@@ -172,28 +172,28 @@ exports.updateName = async (req, res, next) => {
   const userId = req.user._id;
   const name = req.body.name;
   // console.log(req.body.name);
-  updateField(userId, "name", name);
+  updateField(userId, "name", name, res);
 };
 
 exports.updateEmail = async (req, res, next) => {
   const userId = req.user._id;
   const email = req.body.email;
-  updateField(userId, "email", email);
+  updateField(userId, "email", email, res);
 };
 
 exports.updatePhoneNumber = async (req, res, next) => {
   const userId = req.user._id;
   const phoneNumber = req.body.phoneNumber;
-  updateField(userId, "phoneNumber", phoneNumber);
+  updateField(userId, "phoneNumber", phoneNumber, res);
 };
 
 exports.addSkill = async (req, res, next) => {
   const userId = new mongoose.Types.ObjectId(req.user._id);
-  const skill = req.body;
+  const skill = req.body.skill;
   try {
     const result = await UserDetails.updateOne(
       { _id: userId },
-      { $push: { Skills: skill } }
+      { $push: { Skills: { skill } } }
     );
 
     res.status(200).json({
@@ -210,7 +210,7 @@ exports.addSkill = async (req, res, next) => {
 
 exports.updateSkill = async (req, res, next) => {
   const userId = new mongoose.Types.ObjectId(req.user._id.toString());
-  const skillId = new mongoose.Types.ObjectId(req.body._id.toString());
+  const skillId = new mongoose.Types.ObjectId(req.params.id.toString());
   const skill = req.body.skill;
 
   try {
@@ -233,13 +233,13 @@ exports.updateSkill = async (req, res, next) => {
 
 exports.deleteSkill = async (req, res, next) => {
   const userId = new mongoose.Types.ObjectId(req.user._id.toString());
-  const skillId = new mongoose.Types.ObjectId(req.body._id.toString());
+  const skillId = new mongoose.Types.ObjectId(req.params.id.toString());
   const skill = req.body.skill;
 
   try {
     const result = await UserDetails.updateOne(
       { _id: userId, "Skills._id": skillId },
-      { $pull: { Skills: { skill: skill } } }
+      { Skills: { $pull: { skill } } }
     );
 
     res.status(200).json({

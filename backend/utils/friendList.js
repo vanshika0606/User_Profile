@@ -5,15 +5,38 @@ exports.friendList = async (userId, friendStatus, message, res) => {
    userId = new mongoose.Types.ObjectId(userId.toString());
 
   try {
-    const Lists = await UserDetails.find({
-      _id: userId,
-      "friend.status": friendStatus,
-    });
-
-    console.log(Lists);
+    
+    const result = await UserDetails.aggregate([
+      {
+        $match: { _id: userId} 
+      },
+      {
+        $unwind: "$friends" 
+      },
+      {
+        $match: { "friends.status": friendStatus } 
+      },
+      {
+        $lookup: {
+          from: "users", 
+          localField: "friends.user",
+          foreignField: "_id",
+          as: "friendData" 
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          friendData: 1
+        }
+      }
+    ])
+    
+    // console.log(result);
 
     res.status(200).json({
-      Lists,
+      // Lists,
+      result,
       message,
     });
   } catch (err) {

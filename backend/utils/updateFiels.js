@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const UserDetails = require("../model/userDetailsModel");
 
-exports.updateField = async (userId, fieldName, fieldData) => {
+exports.updateField = async (userId, fieldName, fieldData, res) => {
   userId = new mongoose.Types.ObjectId(userId.toString());
 
   const message = `${fieldName} updated successfully`

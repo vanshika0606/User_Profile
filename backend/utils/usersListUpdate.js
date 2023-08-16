@@ -1,3 +1,6 @@
+const mongoose = require('mongoose');
+const UserDetails = require('../model/userDetailsModel');
+
 exports.FriendListUpdate = async (userId) => {
   const id = new mongoose.Types.ObjectId(userId.toString());
 
@@ -12,7 +15,7 @@ exports.FriendListUpdate = async (userId) => {
     }
   );
   const allUser = await UserDetails.find({ _id: { $ne: id } });
-  console.log("all users are: ", allUser);
+  // console.log("all users are: ", allUser);
   let friend = [];
 
   for (const user of allUser) {
@@ -23,7 +26,7 @@ exports.FriendListUpdate = async (userId) => {
     });
   }
 
-  console.log("object of friends for my data: ", friend);
+  // console.log("object of friends for my data: ", friend);
 
   const myData = await UserDetails.findOneAndUpdate(
     { _id: id },
@@ -34,5 +37,5 @@ exports.FriendListUpdate = async (userId) => {
     }
   );
 
-  console.log("my Data: ", myData);
+  // console.log("my Data: ", myData);
 };

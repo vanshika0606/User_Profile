@@ -4,6 +4,7 @@ const { statusUpdate } = require("../utils/friendStatusUpdate");
 const { FriendListUpdate } = require("../utils/usersListUpdate");
 const sendToken = require("../utils/jwtToken");
 const { updateField } = require("../utils/updateFiels");
+const { friendList } = require('../utils/friendList')
 
 exports.register = async (req, res, next) => {
   const { name, email, phoneNumber, password } = req.body;
@@ -24,14 +25,10 @@ exports.register = async (req, res, next) => {
 
   try {
     const user = await UserDetails.create(req.body);
-    FriendListUpdate(user._id);
-    sendToken(user, 200, res);
-
-    return res.status(200).json({
-      user,
-      success: true,
-      message: "User Registered successfully",
-    });
+    console.log(user._id);
+    await FriendListUpdate(user._id);
+    const message = "User registered successfully";
+    sendToken(user, 200, res, message);
   } catch (err) {
     console.error("An error occurred:", err);
 
@@ -71,7 +68,8 @@ exports.loginUser = async (req, res, next) => {
     });
   }
 
-  sendToken(user, 200, res);
+  const message = "User logged in successfully";
+  sendToken(user, 200, res, message);
 };
 
 exports.logout = async (req, res, next) => {
@@ -82,7 +80,7 @@ exports.logout = async (req, res, next) => {
 
   res.status(200).json({
     success: true,
-    message: "Logged Out",
+    message: "Logged Out successfully",
   });
 };
 
@@ -167,7 +165,7 @@ exports.notConnectedFriends = async (req, res, next) => {
 exports.updateProfile = async (req, res, next) => {
   const userId = req.user._id;
   const url = await req.file.path;
-  updateField(userId, "avatar.url", url);
+  updateField(userId, "avatar.url", url, res);
 };
 
 exports.updateName = async (req, res, next) => {
@@ -266,13 +264,12 @@ exports.getSkills = async (req, res, next) => {
 
     res.status(200).json({
       skills,
-      message: "lists of skills are here"
-    })
+      message: "lists of skills are here",
+    });
   } catch (err) {
     console.log("error is: ", err);
     res.status(200).json({
-      message: "error occurred while getting lists"
-    })
+      message: "error occurred while getting lists",
+    });
   }
-
 };

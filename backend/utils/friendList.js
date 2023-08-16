@@ -1,11 +1,16 @@
-const friendList = async (userId, friendStatus, message, res) => {
-  const userId = new mongoose.Types.ObjectId(userId.toString());
+const mongoose = require('mongoose');
+const UserDetails = require("../model/userDetailsModel");
+
+exports.friendList = async (userId, friendStatus, message, res) => {
+   userId = new mongoose.Types.ObjectId(userId.toString());
 
   try {
     const Lists = await UserDetails.find({
-      _id: { $ne: userId },
+      _id: userId,
       "friend.status": friendStatus,
     });
+
+    console.log(Lists);
 
     res.status(200).json({
       Lists,

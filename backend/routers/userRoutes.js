@@ -5,15 +5,15 @@ const { isAuthenticatedUser } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.route('/register').post(register);
-router.route('/login').post(loginUser);
-router.route('/logout').get(isAuthenticatedUser, logout);
-router.route('/updateProfile').patch(isAuthenticatedUser, uploadImage.single('file'), updateProfile);
-router.route('/requestFriend/:id').get(isAuthenticatedUser, requestFriend);
-router.route('/confirmFriend/:id').get(isAuthenticatedUser, confirmFriend);
-router.route('/removeFriend/:id').get(isAuthenticatedUser, removeFriend);
-router.route('/connectedFriends').get(isAuthenticatedUser, getConnectedFriends);
-router.route('/pendingRequests').get(isAuthenticatedUser, pendingRequests);
+router.route('/register').post(register); //working
+router.route('/login').post(loginUser);  //working
+router.route('/logout').get(isAuthenticatedUser, logout);  //working
+router.route('/updateProfile').patch(isAuthenticatedUser, uploadImage.single('file'), updateProfile);  //working
+router.route('/requestFriend/:id').patch(isAuthenticatedUser, requestFriend);   //working
+router.route('/confirmFriend/:id').patch(isAuthenticatedUser, confirmFriend);   //working
+router.route('/removeFriend/:id').patch(isAuthenticatedUser, removeFriend);    //working
+router.route('/connectedFriends').get(isAuthenticatedUser, getConnectedFriends);  //working
+router.route('/pendingRequests').get(isAuthenticatedUser, pendingRequests);  //working
 router.route('/requested').get(isAuthenticatedUser, requestedFriends);
 router.route('/notConnected').get(isAuthenticatedUser, notConnectedFriends);
 router.route('/updateName').patch(isAuthenticatedUser, updateName);

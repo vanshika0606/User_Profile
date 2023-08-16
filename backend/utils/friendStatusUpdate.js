@@ -1,3 +1,6 @@
+const mongoose = require('mongoose');
+const UserDetails = require("../model/userDetailsModel");
+
 exports.statusUpdate = async (
   userId,
   friendId,

@@ -1,5 +1,5 @@
-const sendToken = (user, statusCode, res) => {
-  const token = user.getJWToken();
+const sendToken = async(user, statusCode, res, message) => {
+  const token = await user.getJWToken();
 
   // options for cookie
   const options = {
@@ -13,6 +13,7 @@ const sendToken = (user, statusCode, res) => {
     success: true,
     token,
     user,
+    message
   });
 };
 
